@@ -16,6 +16,11 @@ fn load_input() -> String {
 }
 
 fn main() {
-    let p = parse_input(&load_input());
-    println!("The solution for part 1 is {}", p.iter().max().unwrap());
+    let mut p = parse_input(&load_input());
+    p.sort();
+    println!("The solution for part 1 is {}", p[p.len() - 1]);
+    println!(
+        "The solution for part 2 is {}",
+        p[p.len() - 1] + p[p.len() - 2] + p[p.len() - 3]
+    );
 }
