@@ -32,15 +32,44 @@ fn part1_solve((c1, c2): &(String, String)) -> usize {
     res
 }
 
+fn part2_solve(groups: Vec<Vec<&str>>) -> u32 {
+    groups
+        .iter()
+        .map(|x| {
+            let mut ret = 0;
+            for i in x[0].chars() {
+                if x[1].contains(i) && x[2].contains(i) {
+                    let ord: u32 = i.into();
+                    ret += ord - if i.is_uppercase() { 38 } else { 96 };
+                    println!("{:#?}: {}: {}", x, i, ret);
+                    break;
+                }
+            }
+            ret
+        })
+        .sum()
+}
+
 fn main() {
     if let Some(input) = load_input() {
         println!("[*] Loaded input");
         let c = comparts(input.trim());
-        println!("[*] Got the following compartments: {:#?}", c);
         println!(
             "[*] The solution to part one is: {}",
             c.iter().map(part1_solve).sum::<usize>()
-        )
+        );
+        println!(
+            "The solution to part 2 is: {}",
+            part2_solve(
+                input
+                    .trim()
+                    .split("\n")
+                    .collect::<Vec<&str>>()
+                    .chunks(3)
+                    .map(Vec::from)
+                    .collect()
+            )
+        );
     } else {
         println!("Failed to load input");
     }
