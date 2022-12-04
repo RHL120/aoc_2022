@@ -1,6 +1,5 @@
-day1:
+all:
 	rustc ./day1.rs --out-dir ./bins/
+	rustc ./day2.rs --out-dir ./bins/
 clean:
-	rm -rf ./bins/
-all: day1
-
+	rm -rf ./bins
