@@ -35,13 +35,31 @@ fn overlaps(
     }
 }
 
+fn pt2_overlaps(
+    AssignmentPair(Assignment(start1, end1), Assignment(start2, end2)): AssignmentPair,
+) -> bool {
+    if (start1 <= end2 && end1 >= start2) || (start2 <= end1 && end2 >= start1) {
+        true
+    } else {
+        false
+    }
+}
+
 fn main() {
     let input = load_input().unwrap();
     println!(
-        "{:#?}",
+        "The solution to pt 1: {:#?}",
         parse_input(&input)
             .iter()
             .filter(|x| overlaps(*x.clone()))
+            .collect::<Vec<&AssignmentPair>>()
+            .len()
+    );
+    println!(
+        "The solution to pt 2: {:#?}",
+        parse_input(&input)
+            .iter()
+            .filter(|x| pt2_overlaps(*x.clone()))
             .collect::<Vec<&AssignmentPair>>()
             .len()
     );
