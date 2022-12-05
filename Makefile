@@ -1,6 +1,6 @@
 all: day1 day2 day3 day4 day5
 day1:
-	rustc ./solutions/day1.rs --out-dir ./bins/ && echo 
+	rustc ./solutions/day1.rs --out-dir ./bins/
 day2:
 	rustc ./solutions/day2.rs --out-dir ./bins/
 day3:
