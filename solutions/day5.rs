@@ -106,14 +106,16 @@ fn main() {
     if let Some(input) = load_input().and_then(|x| split_input(&x)) {
         if let Some(instrucs) = parse_instructions(&input.1) {
             if let Some(stacks) = parse_stack(&input.0) {
-                println!(
-                    "The solution to part 1 is: {}",
-                    part1_solve(&stacks, &instrucs).unwrap()
-                );
-                println!(
-                    "The solution to part 1 is: {}",
-                    part2_solve(&stacks, &instrucs).unwrap()
-                );
+                if let Some(solution) = part1_solve(&stacks, &instrucs) {
+                    println!("The solution to part 1 is: {}", solution);
+                } else {
+                    println!("Failed to solve part 1");
+                }
+                if let Some(solution) = part2_solve(&stacks, &instrucs) {
+                    println!("The solution to part 2 is: {}", solution);
+                } else {
+                    println!("Failed to solve part 2");
+                }
             }
         } else {
             eprintln!("Failed to parse instructions");
