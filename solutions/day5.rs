@@ -87,6 +87,21 @@ fn part1_solve(stacks: &Vec<Stack>, instructs: &Vec<Instruction>) -> Option<Stri
         .collect::<Option<String>>()
 }
 
+fn part2_solve(stacks: &Vec<Stack>, instructs: &Vec<Instruction>) -> Option<String> {
+    let mut stacks = stacks.clone();
+    for i in instructs {
+        for j in (0..i.quant).rev() {
+            let a = stacks.get(i.src)?.get(j)?.clone();
+            stacks.get_mut(i.dst)?.insert(0, a);
+            stacks.get_mut(i.src)?.remove(j);
+        }
+    }
+    stacks
+        .iter()
+        .map(|x| Some(x.get(0)?.to_owned()))
+        .collect::<Option<String>>()
+}
+
 fn main() {
     if let Some(input) = load_input().and_then(|x| split_input(&x)) {
         if let Some(instrucs) = parse_instructions(&input.1) {
@@ -94,6 +109,10 @@ fn main() {
                 println!(
                     "The solution to part 1 is: {}",
                     part1_solve(&stacks, &instrucs).unwrap()
+                );
+                println!(
+                    "The solution to part 1 is: {}",
+                    part2_solve(&stacks, &instrucs).unwrap()
                 );
             }
         } else {
