@@ -76,7 +76,7 @@ fn part1_solve(stacks: &Vec<Stack>, instructs: &Vec<Instruction>) -> Option<Stri
     let mut stacks = stacks.clone();
     for i in instructs {
         for _ in 0..i.quant {
-            let a = stacks[i.src][0];
+            let a = stacks.get(i.src)?.get(0)?.clone();
             stacks.get_mut(i.dst)?.insert(0, a);
             stacks.get_mut(i.src)?.remove(0);
         }
