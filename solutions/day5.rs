@@ -72,7 +72,8 @@ fn parse_instructions(input: &str) -> Option<Vec<Instruction>> {
         .collect::<Option<Vec<Instruction>>>()
 }
 
-fn part1_solve(stacks: &mut Vec<Stack>, instructs: &Vec<Instruction>) -> Option<String> {
+fn part1_solve(stacks: &Vec<Stack>, instructs: &Vec<Instruction>) -> Option<String> {
+    let mut stacks = stacks.clone();
     for i in instructs {
         for _ in 0..i.quant {
             let a = stacks[i.src][0];
@@ -89,10 +90,10 @@ fn part1_solve(stacks: &mut Vec<Stack>, instructs: &Vec<Instruction>) -> Option<
 fn main() {
     if let Some(input) = load_input().and_then(|x| split_input(&x)) {
         if let Some(instrucs) = parse_instructions(&input.1) {
-            if let Some(mut stacks) = parse_stack(&input.0) {
+            if let Some(stacks) = parse_stack(&input.0) {
                 println!(
                     "The solution to part 1 is: {}",
-                    part1_solve(&mut stacks, &instrucs).unwrap()
+                    part1_solve(&stacks, &instrucs).unwrap()
                 );
             }
         } else {
