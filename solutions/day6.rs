@@ -25,12 +25,16 @@ fn find_marker(input: &str, n_letters: usize) -> Option<(String, usize)> {
 
 fn main() {
     let input = load_input().unwrap();
-    println!(
-        "The solution to part1 is: {:#?}",
-        find_marker(&input, 4).unwrap()
-    );
-    println!(
-        "The solution to part2 is: {:#?}",
-        find_marker(&input, 14).unwrap()
-    );
+    if let Some((marker, solution)) = find_marker(&input, 4) {
+        println!(
+            "The marker for part 1 is \"{}\" and the solution is: {}",
+            marker, solution
+        );
+    }
+    if let Some((marker, solution)) = find_marker(&input, 14) {
+        println!(
+            "The marker for part 2 is \"{}\"and the solution is: {}",
+            marker, solution
+        );
+    }
 }
