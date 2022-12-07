@@ -1,3 +1,4 @@
+//This solution is very bad but I am not that smart so no blame
 package main
 
 import (
@@ -99,15 +100,32 @@ func part1_solve(input string) (*fileStructure, error) {
 	return ret, nil
 }
 
-func traverse(f *fileStructure, size *int) {
+func traverse_pt1(f *fileStructure, size *int) {
 	if f.is_dir {
 		if f.size <= 100000 {
 			*size += f.size
 		}
 		for _, file := range f.children {
-			traverse(file, size)
+			traverse_pt1(file, size)
 		}
 	}
+}
+
+func traverse_pt2(f *fileStructure, wanted_size int, min *int) {
+	if f.is_dir {
+		if f.size >= wanted_size && f.size < *min {
+			*min = f.size
+		}
+		for _, i := range f.children {
+			traverse_pt2(i, wanted_size, min)
+		}
+	}
+}
+
+func solve_pt2(f *fileStructure) int {
+	var size int = f.size
+	traverse_pt2(f, f.size-40000000, &size)
+	return size
 }
 
 func main() {
@@ -120,8 +138,10 @@ func main() {
 		fmt.Printf("error: %v\n", err)
 		return
 	}
-	fmt.Println(solution)
 	var size = 0
-	traverse(solution, &size)
-	fmt.Println(size)
+	traverse_pt1(solution, &size)
+	fmt.Println("The solution to part1 is: ", size)
+	fmt.Println(solution)
+	size = 0
+	fmt.Println("The solution to part2 is: ", solve_pt2(solution))
 }
