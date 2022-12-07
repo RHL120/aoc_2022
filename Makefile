@@ -12,6 +12,6 @@ day5:
 day6:
 	rustc ./solutions/day6.rs --out-dir ./bins/
 day7:
-	go build ./solutions/day7.rs --out-dir ./bins/
+	go build -o ./bins/ ./solutions/day7.go
 clean:
 	rm -rf ./bins
