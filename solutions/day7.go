@@ -141,7 +141,6 @@ func main() {
 	var size = 0
 	traverse_pt1(solution, &size)
 	fmt.Println("The solution to part1 is: ", size)
-	fmt.Println(solution)
 	size = 0
 	fmt.Println("The solution to part2 is: ", solve_pt2(solution))
 }
