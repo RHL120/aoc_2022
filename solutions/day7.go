@@ -12,7 +12,7 @@ import (
 type fileStructure struct {
 	name     string
 	parent   *fileStructure
-	children []*fileStructure
+	children map[string]*fileStructure
 	is_dir   bool
 	size     int
 }
@@ -20,9 +20,8 @@ type fileStructure struct {
 func part1_solve(input string) (*fileStructure, error) {
 	lines := strings.Split(strings.TrimSpace(input), "\n")
 	ret := &fileStructure{
-		name:     "/",
 		parent:   nil,
-		children: make([]*fileStructure, 0),
+		children: make(map[string]*fileStructure, 0),
 		is_dir:   true,
 		size:     0,
 	}
@@ -42,16 +41,8 @@ func part1_solve(input string) (*fileStructure, error) {
 					return ret, errors.New("the current directory has no parent")
 				}
 			} else {
-				found := false
-				for _, child := range cwd.children {
-					if child.name == arg {
-						if !child.is_dir {
-							return ret, fmt.Errorf("%s: is not a directory", arg)
-						}
-						cwd = child
-						found = true
-					}
-				}
+				var found bool
+				cwd, found = cwd.children[arg]
 				if !found {
 					return ret, fmt.Errorf("%s: No directory", arg)
 				}
@@ -62,11 +53,12 @@ func part1_solve(input string) (*fileStructure, error) {
 			var args = strings.Split(line, " ")
 			size := 0
 			is_dir := false
-			var children []*fileStructure = nil
+			var children map[string]*fileStructure = nil
 			if len(args) != 2 {
 				return ret, fmt.Errorf("line: %d, %s: is not a valid ls entry", idx, line)
 			}
 			if args[0] == "dir" {
+				children = make(map[string]*fileStructure)
 				is_dir = true
 			} else {
 				var err error
@@ -84,14 +76,12 @@ func part1_solve(input string) (*fileStructure, error) {
 
 				}
 			}
-			cwd.children = append(cwd.children, &fileStructure{
-
-				name:     args[1],
+			cwd.children[args[1]] = &fileStructure{
 				parent:   cwd,
 				children: children,
 				is_dir:   is_dir,
 				size:     size,
-			})
+			}
 		}
 	}
 	return ret, nil
