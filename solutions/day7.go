@@ -2,7 +2,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"strconv"
@@ -10,7 +9,6 @@ import (
 )
 
 type fileStructure struct {
-	name     string
 	parent   *fileStructure
 	children map[string]*fileStructure
 	is_dir   bool
@@ -38,13 +36,13 @@ func part1_solve(input string) (*fileStructure, error) {
 				if cwd.parent != nil {
 					cwd = cwd.parent
 				} else {
-					return ret, errors.New("the current directory has no parent")
+					return ret, fmt.Errorf("found cd .. on line %d but the directory has no parent", idx)
 				}
 			} else {
 				var found bool
 				cwd, found = cwd.children[arg]
 				if !found {
-					return ret, fmt.Errorf("%s: No directory", arg)
+					return ret, fmt.Errorf("line: %d, %s: No directory", idx, arg)
 				}
 			}
 		} else if strings.HasPrefix(line, "$ ls") {
@@ -64,7 +62,7 @@ func part1_solve(input string) (*fileStructure, error) {
 				var err error
 				size, err = strconv.Atoi(args[0])
 				if err != nil {
-					return ret, fmt.Errorf("%s has an invalid size", line)
+					return ret, fmt.Errorf("line: %d, %s has an invalid size", idx, line)
 				}
 				parent := cwd
 				for {
