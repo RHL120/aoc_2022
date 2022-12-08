@@ -16,9 +16,9 @@ fn parse_input(input: String) -> Option<Vec<Vec<u32>>> {
                         None
                     }
                 })
-                .collect::<Option<Vec<u32>>>()
+                .collect()
         })
-        .collect::<Option<Vec<Vec<u32>>>>()
+        .collect()
 }
 
 fn is_visible(grid: &Vec<Vec<u32>>, x_len: usize, x: usize, y: usize) -> bool {
