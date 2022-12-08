@@ -19,7 +19,14 @@ type fileStructure struct {
 
 func part1_solve(input string) (*fileStructure, error) {
 	lines := strings.Split(strings.TrimSpace(input), "\n")
-	ret := new(fileStructure)
+	ret := &fileStructure{
+		name:     "/",
+		parent:   nil,
+		children: make([]*fileStructure, 0),
+		is_dir:   true,
+		size:     0,
+	}
+	cwd := ret
 	listing := false
 	for idx, line := range lines {
 		_ = idx
@@ -27,25 +34,21 @@ func part1_solve(input string) (*fileStructure, error) {
 			listing = false
 			arg := strings.TrimPrefix(line, "$ cd ")
 			if arg == "/" {
-				//cd / can occur only at the beginning
-				ret.name = "/"
-				ret.parent = nil
-				ret.children = make([]*fileStructure, 0)
-				ret.is_dir = true
+				cwd = ret
 			} else if arg == ".." {
-				if ret.parent != nil {
-					ret = ret.parent
+				if cwd.parent != nil {
+					cwd = cwd.parent
 				} else {
 					return ret, errors.New("the current directory has no parent")
 				}
 			} else {
 				found := false
-				for _, child := range ret.children {
+				for _, child := range cwd.children {
 					if child.name == arg {
 						if !child.is_dir {
 							return ret, fmt.Errorf("%s: is not a directory", arg)
 						}
-						ret = child
+						cwd = child
 						found = true
 					}
 				}
@@ -71,7 +74,7 @@ func part1_solve(input string) (*fileStructure, error) {
 				if err != nil {
 					return ret, fmt.Errorf("%s has an invalid size", line)
 				}
-				parent := ret
+				parent := cwd
 				for {
 					if parent == nil {
 						break
@@ -81,21 +84,15 @@ func part1_solve(input string) (*fileStructure, error) {
 
 				}
 			}
-			ret.children = append(ret.children, &fileStructure{
+			cwd.children = append(cwd.children, &fileStructure{
 
 				name:     args[1],
-				parent:   ret,
+				parent:   cwd,
 				children: children,
 				is_dir:   is_dir,
 				size:     size,
 			})
 		}
-	}
-	for {
-		if ret.parent == nil {
-			break
-		}
-		ret = ret.parent
 	}
 	return ret, nil
 }
