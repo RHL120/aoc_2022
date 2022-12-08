@@ -51,21 +51,35 @@ fn part1_solve(grid: &Vec<Vec<u32>>) -> Option<usize> {
 }
 
 fn score(grid: &Vec<Vec<u32>>, x: usize, y: usize) -> u32 {
-    (0..y)
-        .rev()
-        .take_while(|&i| grid[i][x] < grid[y][x])
-        .count() as u32
-        * ((y + 1..grid.len())
-            .take_while(|&i| grid[i][x] < grid[y][x])
-            .count() as u32
-            + 1)
-        * (0..x)
-            .rev()
-            .take_while(|&i| grid[y][i] < grid[y][x])
-            .count() as u32
-        * (x + 1..grid.len())
-            .take_while(|&i| grid[y][i] < grid[y][x])
-            .count() as u32
+    let mut top = 0;
+    let mut bottom = 0;
+    let mut left = 0;
+    let mut right = 0;
+    for i in (0..y).rev() {
+        top += 1;
+        if grid[i][x] >= grid[y][x] {
+            break;
+        }
+    }
+    for i in y + 1..grid.len() {
+        bottom += 1;
+        if grid[i][x] >= grid[y][x] {
+            break;
+        }
+    }
+    for i in (0..x).rev() {
+        left += 1;
+        if grid[y][i] >= grid[y][x] {
+            break;
+        }
+    }
+    for i in x + 1..grid.len() {
+        right += 1;
+        if grid[y][i] >= grid[y][x] {
+            break;
+        }
+    }
+    return top * bottom * left * right;
 }
 
 fn part2_solve(grid: &Vec<Vec<u32>>) -> Option<u32> {
