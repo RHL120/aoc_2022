@@ -93,7 +93,7 @@ fn main() {
             eprintln!("Failed to solve part 1")
         }
         if let Some(solution) = part2_solve(&input) {
-            println!("{}", solution)
+            println!("The solution to part 2 is: {}", solution)
         } else {
             eprintln!("Failed to solve part 2")
         }
