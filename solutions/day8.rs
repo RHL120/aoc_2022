@@ -3,38 +3,14 @@ fn load_input() -> Option<String> {
 }
 
 fn is_visible(grid: &Vec<Vec<u32>>, x_len: usize, x: usize, y: usize) -> bool {
-    let mut top = true;
-    let mut bottom = true;
-    let mut left = true;
-    let mut right = true;
-    if y == 0 || y == grid.len() - 1 || x == 0 || x == x_len - 1 {
-        return true;
-    }
-    for i in 0..y {
-        if grid[i][x] >= grid[y][x] {
-            top = false;
-            break;
-        }
-    }
-    for i in y + 1..grid.len() {
-        if grid[i][x] >= grid[y][x] {
-            bottom = false;
-            break;
-        }
-    }
-    for i in 0..x {
-        if grid[y][i] >= grid[y][x] {
-            left = false;
-            break;
-        }
-    }
-    for i in x + 1..grid.len() {
-        if grid[y][i] >= grid[y][x] {
-            right = false;
-            break;
-        }
-    }
-    return top || bottom || left || right;
+    y == 0
+        || y == grid.len() - 1
+        || x == 0
+        || x == x_len - 1
+        || (0..y).all(|i| grid[i][x] < grid[y][x])
+        || (y + 1..grid.len()).all(|i| grid[i][x] < grid[y][x])
+        || (0..x).all(|i| grid[y][i] < grid[y][x])
+        || (x + 1..grid.len()).all(|i| grid[y][i] < grid[y][x])
 }
 
 fn solve_part1(input: &str) -> Option<usize> {
@@ -61,13 +37,6 @@ fn solve_part1(input: &str) -> Option<usize> {
             return None;
         }
         for (x, _) in row.iter().enumerate() {
-            /*if x == 0
-                || x == x_len - 1
-                || grid.iter().all(|r| r[x] <= *cell)
-                || row.iter().max()? == cell
-            {
-                ret += 1
-            }*/
             if is_visible(&grid, x_len, x, y) {
                 ret += 1
             }
