@@ -3,9 +3,7 @@ fn load_input() -> Option<String> {
 }
 
 fn is_visible(grid: &Vec<Vec<u32>>, x_len: usize, x: usize, y: usize) -> bool {
-    y == 0
-        || y == grid.len() - 1
-        || x == 0
+    x == 0
         || x == x_len - 1
         || (0..y).all(|i| grid[i][x] < grid[y][x])
         || (y + 1..grid.len()).all(|i| grid[i][x] < grid[y][x])
@@ -33,12 +31,16 @@ fn solve_part1(input: &str) -> Option<usize> {
     let x_len = grid.get(0)?.len();
     let mut ret = 0;
     for (y, row) in grid.iter().enumerate() {
-        if row.len() != x_len {
-            return None;
-        }
-        for (x, _) in row.iter().enumerate() {
-            if is_visible(&grid, x_len, x, y) {
-                ret += 1
+        if y == 0 || y == grid.len() - 1 {
+            ret += x_len;
+        } else {
+            if row.len() != x_len {
+                return None;
+            }
+            for (x, _) in row.iter().enumerate() {
+                if is_visible(&grid, x_len, x, y) {
+                    ret += 1
+                }
             }
         }
     }
