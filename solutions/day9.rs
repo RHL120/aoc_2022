@@ -74,22 +74,35 @@ fn move_rope(rope: &mut Vec<(i32, i32)>, instructions: &Vec<Motion>) -> usize {
             rope[0].0 += dx;
             rope[0].1 += dy;
             update_rope(rope, 1);
-            println!(
-                "head: ({}, {}), tail: ({}, {})",
-                rope[0].0, rope[0].1, rope[1].0, rope[1].1
-            );
-            let tail = rope[rope.len() - 1];
-            visited.insert(tail);
+            visited.insert(rope[rope.len() - 1]);
         }
     }
     visited.len()
 }
 
 fn main() {
-    let input = parse_input(&load_input().unwrap()).unwrap();
-    let mut rope = Vec::new();
-    for _ in 0..2 {
-        rope.push((0, 0));
+    if let Some(input) = load_input() {
+        if let Some(input) = parse_input(&input) {
+            let mut rope1 = Vec::new();
+            let mut rope2 = Vec::new();
+            for _ in 0..2 {
+                rope1.push((0, 0));
+            }
+            for _ in 0..10 {
+                rope2.push((0, 0));
+            }
+            println!(
+                "The solution to part1 is: {}",
+                move_rope(&mut rope1, &input)
+            );
+            println!(
+                "The solution to part2 is: {}",
+                move_rope(&mut rope2, &input)
+            );
+        } else {
+            println!("Failed to parse input file");
+        }
+    } else {
+        println!("Failed to read the input file");
     }
-    println!("{}", move_rope(&mut rope, &input));
 }
