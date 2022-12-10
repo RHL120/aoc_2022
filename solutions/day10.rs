@@ -43,7 +43,7 @@ impl<'a> Cpu<'a> {
         }
     }
     fn draw_screen(self) -> String {
-        let mut ret = String::new();
+        let mut ret = String::from("\u{1b}[48;5;7m#\u{1b}[m");
         for (i, x_reg) in self {
             let i = i as isize;
             let x_reg = x_reg as isize;
