@@ -43,6 +43,23 @@ impl<'a> Cpu<'a> {
             instructions: instrucs,
         }
     }
+    fn draw_screen(self) -> String {
+        let mut ret = String::new();
+        for (i, x_reg) in self {
+            let i = i as isize;
+            let x_reg = x_reg as isize;
+            let cursor_pos = (i - 1) % 40;
+            if x_reg - 1 <= cursor_pos && cursor_pos <= x_reg + 1 {
+                ret += "\u{1b}[48;5;7m#\u{1b}[m"
+            } else {
+                ret += " "
+            }
+            if i % 40 == 0 && i != 0 {
+                ret += "\n"
+            }
+        }
+        ret
+    }
 }
 
 impl<'a> Iterator for Cpu<'a> {
@@ -77,11 +94,13 @@ fn main() {
             let mut s = 0;
             for (i, x_reg) in cpu {
                 if [20, 60, 100, 140, 180, 220].contains(&i) {
-                    println!("{} * {} = {}", i, x_reg, (i as isize) * (x_reg as isize));
                     s += (i as isize) * (x_reg as isize);
                 }
             }
             println!("The solution to part1 is: {}", s);
+            println!("The solution to part2 is:");
+            let cpu = Cpu::new(&instructions);
+            println!("{}", cpu.draw_screen());
         } else {
             println!("Failed to parse input");
         }
