@@ -24,7 +24,7 @@ fn parse_input(input: &str) -> Option<Vec<Instruction>> {
             if x == "noop" {
                 Some(Instruction::Noop)
             } else if x.starts_with("addx ") {
-                Some(Instruction::Addx(x.replace("addx ", "").parse()?))
+                Some(Instruction::Addx(x.replace("addx ", "").parse().ok()?))
             } else {
                 println!("Error on line: {}", x);
                 None
@@ -43,7 +43,11 @@ impl<'a> Cpu<'a> {
             instructions: instrucs,
         }
     }
-    fn next_cycle(&mut self) -> Option<i32> {
+}
+
+impl<'a> Iterator for Cpu<'a> {
+    type Item = (usize, i32);
+    fn next(&mut self) -> Option<Self::Item> {
         if self.idx >= self.instructions.len() {
             return None;
         }
@@ -62,25 +66,19 @@ impl<'a> Cpu<'a> {
                 }
             }
         };
-        Some(self.x_reg)
+        Some((self.cycle_counter, self.x_reg))
     }
 }
 
 fn main() {
     if let Some(input) = load_input() {
         if let Some(instructions) = parse_input(&input) {
-            let mut cpu = Cpu::new(&instructions);
+            let cpu = Cpu::new(&instructions);
             let mut s = 0;
-            while cpu.next_cycle() != None {
-                let i = cpu.cycle_counter;
+            for (i, x_reg) in cpu {
                 if [20, 60, 100, 140, 180, 220].contains(&i) {
-                    println!(
-                        "{} * {} = {}",
-                        i,
-                        cpu.x_reg,
-                        (i as isize) * (cpu.x_reg as isize)
-                    );
-                    s += (i as isize) * (cpu.x_reg as isize);
+                    println!("{} * {} = {}", i, x_reg, (i as isize) * (x_reg as isize));
+                    s += (i as isize) * (x_reg as isize);
                 }
             }
             println!("The solution to part1 is: {}", s);
