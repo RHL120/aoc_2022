@@ -102,23 +102,23 @@ fn load_input() -> Option<String> {
 
 fn main() {
     if let Some(input) = load_input() {
-        if let Some(input) = part2_parse(&input) {
-            println!(
-                "the solution to part 2 is: {}",
-                input
-                    .iter()
-                    .map(|x| part2_calc_score(x.clone()))
-                    .sum::<u32>()
-            );
-        } else {
-            println!("Failed to parse the input file");
-        }
         if let Some(input) = part1_parse(&input) {
             println!(
                 "the solution to part 1 is: {}",
                 input
                     .iter()
                     .map(|x| part1_calc_score(x.clone()))
+                    .sum::<u32>()
+            );
+        } else {
+            println!("Failed to parse the input file");
+        }
+        if let Some(input) = part2_parse(&input) {
+            println!(
+                "the solution to part 2 is: {}",
+                input
+                    .iter()
+                    .map(|x| part2_calc_score(x.clone()))
                     .sum::<u32>()
             );
         } else {

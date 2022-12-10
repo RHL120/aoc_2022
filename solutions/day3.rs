@@ -41,7 +41,6 @@ fn part2_solve(groups: Vec<Vec<&str>>) -> u32 {
                 if x[1].contains(i) && x[2].contains(i) {
                     let ord: u32 = i.into();
                     ret += ord - if i.is_uppercase() { 38 } else { 96 };
-                    println!("{:#?}: {}: {}", x, i, ret);
                     break;
                 }
             }
