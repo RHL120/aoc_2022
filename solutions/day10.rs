@@ -1,4 +1,3 @@
-#[derive(Copy, Clone, Debug)]
 pub enum Instruction {
     Noop,
     Addx(i32),
