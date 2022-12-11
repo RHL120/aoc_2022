@@ -1,5 +1,3 @@
-use std::str::FromStr;
-
 fn load_input() -> Option<String> {
     std::fs::read_to_string("./inputs/day11").ok()
 }
@@ -7,22 +5,12 @@ fn load_input() -> Option<String> {
 type Item = usize;
 
 struct Block {
-    monkey_idx: usize,
     items: Vec<Item>,
     operation: Box<dyn Fn(Item) -> Item>,
     test: usize,
     on_true: usize,
     on_false: usize,
-    counter: u32,
-}
-
-fn parse_idx(line: &str) -> Option<usize> {
-    Some(
-        line.strip_prefix("Monkey ")?
-            .strip_suffix(":")?
-            .parse()
-            .ok()?,
-    )
+    counter: usize,
 }
 
 fn parse_items(line: &str) -> Option<Vec<Item>> {
@@ -83,7 +71,6 @@ fn parse_input(input: &str) -> Option<Vec<Block>> {
     for i in input.split("\n\n") {
         let i = i.lines().collect::<Vec<&str>>();
         ret.push(Block {
-            monkey_idx: parse_idx(i[0])?,
             items: parse_items(i[1])?,
             operation: parse_operation(i[2])?,
             test: parse_test(i[3])?,
@@ -95,7 +82,7 @@ fn parse_input(input: &str) -> Option<Vec<Block>> {
     Some(ret)
 }
 
-fn solve_pt1(blocks: Vec<Block>) -> u32 {
+fn solve_pt1(blocks: Vec<Block>) -> usize {
     let mut blocks = blocks;
     for _ in 0..20 {
         for bidx in 0..blocks.len() {
@@ -117,10 +104,10 @@ fn solve_pt1(blocks: Vec<Block>) -> u32 {
     blocks[blocks.len() - 1].counter * blocks[blocks.len() - 2].counter
 }
 
-fn solve_pt2(blocks: Vec<Block>) -> String {
+fn solve_pt2(blocks: Vec<Block>) -> usize {
     let mut blocks = blocks;
     let modulos = blocks.iter().map(|x| x.test).product::<usize>();
-    for i in 0..10000 {
+    for _ in 0..10000 {
         for bidx in 0..blocks.len() {
             while blocks[bidx].items.len() > 0 {
                 blocks[bidx].counter += 1;
@@ -135,27 +122,9 @@ fn solve_pt2(blocks: Vec<Block>) -> String {
                 blocks[bidx].items.remove(0);
             }
         }
-        if i % 1000 == 0 {
-            for j in &blocks {
-                println!(
-                    "Monkey {} inspected items {} times.",
-                    j.monkey_idx, j.counter
-                );
-            }
-            println!("--------------------------------");
-        }
     }
-    println!(
-        "{}, {}",
-        blocks[blocks.len() - 1].counter,
-        blocks[blocks.len() - 2].counter
-    );
     blocks.sort_by_key(|x| x.counter);
-    format!(
-        "{} * {}",
-        blocks[blocks.len() - 1].counter,
-        blocks[blocks.len() - 2].counter
-    )
+    blocks[blocks.len() - 1].counter * blocks[blocks.len() - 2].counter
 }
 
 fn main() {
