@@ -117,10 +117,55 @@ fn solve_pt1(blocks: Vec<Block>) -> u32 {
     blocks[blocks.len() - 1].counter * blocks[blocks.len() - 2].counter
 }
 
+fn solve_pt2(blocks: Vec<Block>) -> String {
+    let mut blocks = blocks;
+    let modulos = blocks.iter().map(|x| x.test).product::<usize>();
+    for i in 0..10000 {
+        for bidx in 0..blocks.len() {
+            while blocks[bidx].items.len() > 0 {
+                blocks[bidx].counter += 1;
+                let new = (blocks[bidx].operation)(blocks[bidx].items[0]) % modulos;
+                if new % blocks[bidx].test == 0 {
+                    let idx = blocks[bidx].on_true;
+                    blocks[idx].items.push(new);
+                } else {
+                    let idx = blocks[bidx].on_false;
+                    blocks[idx].items.push(new);
+                }
+                blocks[bidx].items.remove(0);
+            }
+        }
+        if i % 1000 == 0 {
+            for j in &blocks {
+                println!(
+                    "Monkey {} inspected items {} times.",
+                    j.monkey_idx, j.counter
+                );
+            }
+            println!("--------------------------------");
+        }
+    }
+    println!(
+        "{}, {}",
+        blocks[blocks.len() - 1].counter,
+        blocks[blocks.len() - 2].counter
+    );
+    blocks.sort_by_key(|x| x.counter);
+    format!(
+        "{} * {}",
+        blocks[blocks.len() - 1].counter,
+        blocks[blocks.len() - 2].counter
+    )
+}
+
 fn main() {
     let input = load_input().unwrap();
     println!(
         "The solution to part 1 is: {}",
         solve_pt1(parse_input(&input).unwrap())
+    );
+    println!(
+        "The solution to part 2 is: {}",
+        solve_pt2(parse_input(&input).unwrap())
     );
 }
