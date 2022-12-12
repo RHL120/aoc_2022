@@ -58,5 +58,22 @@ fn distance(m: &Maze, start: Step, end: Step) -> Option<i32> {
 fn main() {
     let input = load_input().unwrap();
     let (maze, start, end) = parse_input(&input);
-    println!("{}", distance(&maze, start, end).unwrap());
+    println!(
+        "The solution to part 1 is: {}",
+        distance(&maze, start, end).unwrap()
+    );
+    let mut pt2_paths = Vec::new();
+    for (y, row) in maze.iter().enumerate() {
+        for (x, cell) in row.iter().enumerate() {
+            if *cell == 0 {
+                if let Some(x) = distance(&maze, (x as isize, y as isize), end) {
+                    pt2_paths.push(x);
+                }
+            }
+        }
+    }
+    println!(
+        "The solution to part 2 is: {}",
+        pt2_paths.iter().min().unwrap()
+    );
 }
