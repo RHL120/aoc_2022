@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use std::collections::VecDeque;
 type Step = (isize, isize);
-type Maze = Vec<Vec<i32>>;
+type Maze = Vec<Vec<u8>>;
 
 fn load_input() -> Option<String> {
     std::fs::read_to_string("./inputs/day12").ok()
@@ -21,7 +21,7 @@ fn parse_input(input: &str) -> (Maze, (isize, isize), (isize, isize)) {
                 end = (j as isize, i as isize);
                 25
             } else {
-                (cell as i32) - 97
+                (cell as u8) - 97
             });
         }
         maze.push(r);
@@ -42,7 +42,7 @@ fn distance(m: &Maze, start: Step, end: Step) -> Option<i32> {
                 && ny >= 0
                 && uny < m.len()
                 && unx < m[uny].len()
-                && m[uny][unx] - m[y as usize][x as usize] <= 1
+                && m[uny][unx] <= m[y as usize][x as usize] + 1
                 && visited.insert((nx, ny))
             {
                 if (nx, ny) == end {
