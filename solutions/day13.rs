@@ -1,5 +1,7 @@
+use std::cmp::{Eq, Ord, Ordering, PartialEq};
 use std::fmt::Display;
 use std::str::FromStr;
+#[derive(PartialEq, Eq, Clone)]
 enum Packet {
     Int(u32),
     List(Vec<Packet>),
@@ -7,13 +9,6 @@ enum Packet {
 
 //We can't use Ordering because Equality is not a useful construct for Packet
 //(in terms of this puzzle)
-#[derive(Debug)]
-enum PacketOrd {
-    Less,
-    Greater,
-    Ndf,
-}
-
 impl Display for Packet {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -83,31 +78,23 @@ impl FromStr for Packet {
     }
 }
 
-impl Packet {
-    fn pcmp(&self, other: &Self) -> PacketOrd {
+impl PartialOrd for Packet {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         use std::cmp::Ordering::*;
         use Packet::*;
-        match self {
+        Some(match self {
             Int(i1) => match other {
-                Int(i2) => match i1.cmp(i2) {
-                    Greater => PacketOrd::Greater,
-                    Less => PacketOrd::Less,
-                    Equal => PacketOrd::Ndf,
-                },
-                a @ List(_) => List(vec![Int(*i1)]).pcmp(a),
+                Int(i2) => i1.cmp(i2),
+                a @ List(_) => List(vec![Int(*i1)]).cmp(a),
             },
             a @ List(l1) => match other {
-                Int(i2) => a.pcmp(&List(vec![Int(*i2)])),
+                Int(i2) => a.cmp(&List(vec![Int(*i2)])),
                 List(l2) => {
-                    let mut ret = match l1.len().cmp(&l2.len()) {
-                        Greater => PacketOrd::Greater,
-                        Less => PacketOrd::Less,
-                        Equal => PacketOrd::Ndf,
-                    };
+                    let mut ret = l1.len().cmp(&l2.len());
                     let mut i = 0;
                     while i < l1.len() && i < l2.len() {
-                        match l1[i].pcmp(&l2[i]) {
-                            PacketOrd::Ndf => (),
+                        match l1[i].cmp(&l2[i]) {
+                            Equal => (),
                             x => {
                                 ret = x;
                                 break;
@@ -118,7 +105,13 @@ impl Packet {
                     ret
                 }
             },
-        }
+        })
+    }
+}
+
+impl Ord for Packet {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.partial_cmp(other).unwrap()
     }
 }
 
@@ -126,8 +119,7 @@ fn load_input() -> Option<String> {
     std::fs::read_to_string("./inputs/day13").ok()
 }
 
-fn main() {
-    let input = load_input().unwrap();
+fn part1_solve(input: &str) -> usize {
     let a = input
         .trim()
         .split("\n\n")
@@ -141,10 +133,34 @@ fn main() {
         .unwrap();
     let mut ret = 0;
     for (i, (a, b)) in a.iter().enumerate() {
-        match a.pcmp(&b) {
-            PacketOrd::Greater => (),
+        match a.cmp(&b) {
+            Ordering::Greater => (),
             _ => ret += i + 1,
         }
     }
-    println!("The solution to part1 is: {}", ret);
+    ret
+}
+
+fn part2_solve(input: &str) -> usize {
+    use Packet::*;
+    let mut a = input
+        .trim()
+        .replace("\n\n", "\n")
+        .split("\n")
+        .map(|x| x.parse())
+        .collect::<Result<Vec<Packet>, ParserError>>()
+        .unwrap();
+    let div1 = List(vec![List(vec![Int(2)])]);
+    let div2 = List(vec![List(vec![Int(6)])]);
+    a.push(div1.clone());
+    a.push(div2.clone());
+    a.sort();
+    (a.iter().position(|x| x == &div1).unwrap() + 1)
+        * (a.iter().position(|x| x == &div2).unwrap() + 1)
+}
+
+fn main() {
+    let input = load_input().unwrap();
+    println!("The solution to part1 is: {}", part1_solve(&input));
+    println!("The solution to part2 is: {}", part2_solve(&input));
 }
