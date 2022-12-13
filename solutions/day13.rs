@@ -120,25 +120,23 @@ fn load_input() -> Option<String> {
 }
 
 fn part1_solve(input: &str) -> usize {
-    let a = input
+    input
         .trim()
         .split("\n\n")
-        .map(|x| {
+        .enumerate()
+        .filter_map(|(i, x)| {
             let (a, b) = x
                 .split_once("\n")
-                .ok_or(ParserError::Unknown(x.to_string()))?;
-            Ok((a.parse()?, b.parse()?))
+                .ok_or(ParserError::Unknown(x.to_string()))
+                .unwrap();
+            let (a, b): (Packet, Packet) = (a.parse().unwrap(), b.parse().unwrap());
+            if a < b {
+                Some(i + 1)
+            } else {
+                None
+            }
         })
-        .collect::<Result<Vec<(Packet, Packet)>, ParserError>>()
-        .unwrap();
-    let mut ret = 0;
-    for (i, (a, b)) in a.iter().enumerate() {
-        match a.cmp(&b) {
-            Ordering::Greater => (),
-            _ => ret += i + 1,
-        }
-    }
-    ret
+        .sum()
 }
 
 fn part2_solve(input: &str) -> usize {
