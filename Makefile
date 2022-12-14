@@ -1,4 +1,4 @@
-all: day1 day2 day3 day4 day5 day6 day7 day8 day9 day10 day11 day12 day13
+all: day1 day2 day3 day4 day5 day6 day7 day8 day9 day10 day11 day12 day13 day14
 day1:
 	rustc ./solutions/day1.rs --out-dir ./bins/
 day2:
@@ -25,5 +25,7 @@ day12:
 	rustc ./solutions/day12.rs --out-dir ./bins/
 day13:
 	rustc ./solutions/day13.rs --out-dir ./bins/
+day14:
+	rustc ./solutions/day14.rs --out-dir ./bins/
 clean:
 	rm -rf ./bins
